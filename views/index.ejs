@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>电商评论数据挖掘系统</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div>
+      <input type="text" id="itemID">
+    </div>
+
+    <div>
+      <button id="start">START</button>
+    </div>
+  <script>
+    $('#strat').click(function(){
+        $.ajax({
+            url: "/",
+            contentType: 'application/json',
+            type: 'POST',
+            data: JSON.stringify({
+                itemID: $('#itemID').val()
+            }),
+            success: function(data) {
+                var queryID = data.body.queryID;
+                // show hint
+                // keep query statue
+                setTimeout(KeepQuery.bind(null, queryID, 'asking'), 5000);
+            },
+            error: function(xhr, status, err) {
+                //to do
+            }
+        })
+    });
+    function KeepQuery(queryID, pre){
+        $.ajax({
+            url: "/statue",
+            contentType: 'application/json',
+            type: 'get',
+            success: function(data) {
+                var statue = data.body.statue;
+                if(statue==='asking'){
+                    setTimeout(KeepQuery.bind(null, queryID), 5000);
+                }
+                else if(statue==='handling'){
+                    if(pre==='asking'){
+                        // change hint
+                    }
+                    setTimeout(KeepQuery.bind(null, queryID), 1000);
+                }
+                else{
+                    self.location='/view';
+                }
+
+            },
+            error: function(xhr, status, err) {
+                //to do
+            }
+        })
+    }
+  </script>
+  </body>
+</html>
