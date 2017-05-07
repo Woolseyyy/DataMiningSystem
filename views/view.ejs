@@ -1,11 +1,48 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= 电商评论数据挖掘系统 %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-  </head>
-  <body>
-
-  </body>
+ <head> 
+  <meta charset="UTF-8" /> 
+  <title>可视化展示</title> 
+  <link rel="stylesheet" href="tagcloud.css">
+  <script src="tagcloud.min.js"></script>
+  <script src="https://a.alipayobjects.com/g/datavis/g2/2.3.0/g2.js"></script>
+ </head> 
+ <body> 
+   <div>
+      <p>商品<%= query_id %>共获取评论<%= data.commentsTotalNum %>条，其中有效评论共<%= data.validComNum %>条,无效评论共<%= data.invalidComNum %>
+      条，商品评分为<%= data.avergeStar %></p>
+   </div>
+   <div id="c1"></div>
+   <div id="c2"></div>
+   <div style="height: 400px; width:400px;"> 
+    <div class="tagcloud"> 
+     <a href="#">质量很好</a> 
+     <a href="#">漂亮质感</a> 
+     <a href="#">做工精细</a> 
+     <a href="#">美观大方</a> 
+     <a href="#">送货超快</a> 
+     <a href="#">尺码准确</a> 
+     <a href="#">外观漂亮</a> 
+     <a href="#">颜色好看</a>
+     <a href="#">材质轻盈</a>
+     <a href="#">物有所值</a>
+     <!--此处的文字替换为关键词<%= key_com.KeyCom1 %>到<%= key_com.KeyCom10 %>-->
+    </div> 
+   </div> 
+  <script src="tagcloud.min.js"></script> 
+  <script type="text/javascript">
+    tagcloud({
+        //参数名: 默认值
+        fontsize: 16,       //基本字体大小
+        radius: 60,         //滚动半径
+        mspeed: "normal",   //滚动最大速度
+        ispeed: "normal",   //滚动初速度
+        direction: 135,     //初始滚动方向
+        keep: true          //鼠标移出组件后是否继续随鼠标滚动
+    });
+    indata = '<%= data %>';
+  </script>
+  <script src="scoreHisto.js"></script>
+  <script src="validPie.js"></script>
+ </body>
 </html>

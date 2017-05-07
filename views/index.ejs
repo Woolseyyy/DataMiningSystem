@@ -4,17 +4,47 @@
     <title>电商评论数据挖掘系统</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/canvas-particle.js"></script>
+    <script>
+        window.onload = function(){
+            //配置
+            var config = {
+                vx: 4,//点x轴速度,正为右，负为左
+                vy:  4,//点y轴速度
+                height: 4,//点高宽，其实为正方形，所以不宜太大
+                width: 4,
+                count: 100,//点个数
+                color: "121, 162, 185",//点颜色
+                stroke: "130,255,255",//线条颜色
+                dist: 6000,//点吸附距离
+                e_dist: 20000,//鼠标吸附加速距离
+                max_conn: 10//点到点最大连接数
+            }
+            //调用
+            CanvasParticle(config);
+        }
+    </script>
   </head>
   <body>
+  <h1>哇！绝！</h1>
     <div>
-      <input type="text" id="itemID">
+      <input type="text" id="itemID" placeholder="请输入商品ID">
     </div>
 
     <div>
       <button id="start">START</button>
     </div>
+
+  <div id="hint">
+    <div class="la-square-jelly-box square-center" >
+      <div></div>
+      <div></div>
+    </div>
+    <h2 id="asking">爬取数据中...</h2>
+    <h2 id="handling">处理数据中...</h2>
+  </div>
   <script>
-    $('#strat').click(function(){
+    $('#start').click(function(){
         $.ajax({
             url: "/",
             contentType: 'application/json',
@@ -23,13 +53,15 @@
                 itemID: $('#itemID').val()
             }),
             success: function(data) {
+                console.log('success');
                 var queryID = data.body.queryID;
                 // show hint
+                $("#hint").show(1000);
                 // keep query statue
-                setTimeout(KeepQuery.bind(null, queryID, 'asking'), 5000);
+                setTimeout(KeepQuery.bind(null, queryID, 'asking'), 10000);
             },
             error: function(xhr, status, err) {
-                //to do
+                console.log('err');
             }
         })
     });
@@ -38,19 +70,25 @@
             url: "/statue",
             contentType: 'application/json',
             type: 'get',
+            data:{queryID: queryID},
             success: function(data) {
                 var statue = data.body.statue;
                 if(statue==='asking'){
-                    setTimeout(KeepQuery.bind(null, queryID), 5000);
+                    setTimeout(KeepQuery.bind(null, queryID, statue), 10000);
                 }
                 else if(statue==='handling'){
                     if(pre==='asking'){
                         // change hint
+                        $("#asking").hide();
+                        $("#handling").show();
                     }
-                    setTimeout(KeepQuery.bind(null, queryID), 1000);
+                    setTimeout(KeepQuery.bind(null, queryID, statue), 10000);
+                }
+                else if(statue==='ok'){
+                    self.location='/view?id='+ queryID;
                 }
                 else{
-                    self.location='/view';
+                    console.log(statue);
                 }
 
             },

@@ -7,7 +7,5 @@ var Schema = mongoose.Schema;
 module.exports = mongoose.model('query', new Schema({
     itemID:String,
     statue:{type:'String', enum:['asking', 'handling', 'ok'], default:'asking'},
-    data:{
-
-    }
+    data:{}
 }));

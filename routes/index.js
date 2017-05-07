@@ -12,8 +12,18 @@ router.post('/', function(req, res, next){
   Query.create({id:itemID}, function(err, query){
     var queryID = query._id;
     var itemID = query._itemID;
-
-    //send to Huang Qihao
+    console.log(queryID);
+    //start pachong
+    const spawn = require('child_process').spawn;
+    var child = spawn('python', ['jdComment.py', itemID, queryID]);
+    child.stdout.on('data', function(stdout){
+        Query.find({_id:queryID}, function (err, query) {
+            query.statue = 'asking';
+            query.save(function (err) {
+                console.log(err);
+            })
+        })
+    });
 
     res.json({
         code:0,
@@ -28,8 +38,11 @@ router.post('/', function(req, res, next){
 
 router.get('/statue', function (req, res, next) {
   var queryID = req.query.queryID;
-  Query.find({_id:queryID}, function (err, query) {
+  console.log(queryID);
+  Query.findOne({_id:queryID}, function (err, query) {
+      console.log(query);
       var statue = query.statue;
+      console.log(statue);
       res.json({
           code:0,
           msg:'ok',
@@ -40,11 +53,11 @@ router.get('/statue', function (req, res, next) {
   })
 });
 
-router.post('statue', function(req, res, next){
-  var queryID = req.query.queryID;
-  var statue = req.query.queryID;
+router.post('/statue', function(req, res, next){
+  var queryID = req.query.query_id;
+  var statue = req.query.statue;
   var data = req.query.data;
-      Query.find({_id:queryID}, function (err, query) {
+      Query.findOne({_id:queryID}, function (err, query) {
           query.statue = statue;
           if(data){
             query.data = data;
@@ -63,7 +76,7 @@ router.post('statue', function(req, res, next){
 
 router.get('/view', function(req, res, next){
   var id = req.query.id;
-  Query.find({_id:id}, function (err, query) {
+  Query.findOne({_id:id}, function (err, query) {
       res.render('view', {data: query.data})
   })
 });
