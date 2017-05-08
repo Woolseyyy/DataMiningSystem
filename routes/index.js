@@ -18,7 +18,7 @@ router.post('/', function(req, res, next){
     var child = spawn('python', ['jdComment.py', itemID, queryID]);
     child.stdout.on('data', function(stdout){
         Query.findOne({_id:queryID}, function (err, query) {
-            query.statue = 'asking';
+            query.statue = 'handling';
             query.save(function (err) {
                 console.log(err);
             })
