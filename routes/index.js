@@ -11,7 +11,7 @@ router.post('/', function(req, res, next){
   var itemID = req.body.itemID;
   Query.create({id:itemID}, function(err, query){
     var queryID = query._id;
-    var itemID = query._itemID;
+    var itemID = query.itemID;
     console.log(queryID);
     //start pachong
     const spawn = require('child_process').spawn;
